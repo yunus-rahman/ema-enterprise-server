@@ -6,7 +6,7 @@ require("dotenv").config();
 
 // middleware
 app.use(express.json());
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 app.use(cors({
     origin: [
         "http://localhost:3000",
@@ -31,6 +31,42 @@ async function run() {
         // Connect the client to the server	(optional starting in v4.7)
         // await client.connect();
         // Send a ping to confirm a successful connection
+
+        // Collections
+        const unitCollections = client.db('ema-enterprise').collection('all-unit');
+
+        //    Admin 
+        // Unit Management
+        app.post('/all-unit', async (req, res) => {
+            const newUnit = req.body;
+            const result = await unitCollections.insertOne(newUnit);
+            res.send(result);
+        })
+        app.get('/all-unit', async (req, res) => {
+            const result = await unitCollections.find().toArray() || [];
+            res.send(result)
+        })
+        app.delete('/all-unit/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = await unitCollections.deleteOne(query);
+            res.send(result);
+        })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
     } finally {
