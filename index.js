@@ -34,6 +34,7 @@ async function run() {
 
         // Collections
         const unitCollections = client.db('ema-enterprise').collection('all-unit');
+        const productCollections = client.db('ema-enterprise').collection('all-product')
 
         //    Admin 
         // Unit Management
@@ -53,8 +54,16 @@ async function run() {
             res.send(result);
         })
 
-
-
+        // Product Management
+        app.post('/all-product', async (req, res) => {
+            const newProduct = req.body;
+            const result = await productCollections.insertOne(newProduct)
+            res.send(result);
+        })
+        app.get('/all-product', async (req, res) => {
+            const result = await productCollections.find().toArray() || [];
+            res.send(result);
+        })
 
 
 
